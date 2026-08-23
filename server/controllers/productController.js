@@ -207,14 +207,25 @@ exports.updateProduct = async (req, res, next) => {
     if (price !== undefined) product.price = Number(price);
     if (images !== undefined) product.images = Array.isArray(images) ? images : product.images;
     if (category !== undefined) product.category = category;
-    if (parsedColors !== undefined && Array.isArray(parsedColors)) product.colors = parsedColors;
-    if (color !== undefined) product.color = color;
     if (brand !== undefined) product.brand = brand;
+
+    if (parsedColors !== undefined && Array.isArray(parsedColors)) {
+      product.colors = parsedColors;
+      if (parsedColors.length > 0) {
+        product.color = parsedColors[0];
+      }
+      product.markModified('colors');
+    } else if (color !== undefined) {
+      product.color = color;
+      product.colors = [color];
+      product.markModified('colors');
+    }
 
     if (parsedSizes !== undefined && Array.isArray(parsedSizes)) {
       product.sizes = parsedSizes;
       product.stock = parsedSizes.reduce((acc, curr) => acc + (Number(curr.quantity) || 0), 0);
       product.isOutOfStock = product.stock <= 0;
+      product.markModified('sizes');
     }
 
     const updatedProduct = await product.save();

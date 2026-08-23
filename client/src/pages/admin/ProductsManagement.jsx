@@ -221,9 +221,18 @@ const ProductsManagement = () => {
                                 <span className="font-extrabold text-slate-900 block max-w-xs truncate">
                                   {p.name}
                                 </span>
-                                <span className="text-[11px] text-slate-400">
-                                  اللون: {p.color || 'عام'}
-                                </span>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {(p.colors && p.colors.length > 0 ? p.colors : [p.color || 'عام']).map(
+                                    (clr, cIdx) => (
+                                      <span
+                                        key={cIdx}
+                                        className="text-[10px] px-1.5 py-0.5 bg-purple-50 text-purple-700 rounded-md border border-purple-200/50 font-bold"
+                                      >
+                                        {clr}
+                                      </span>
+                                    )
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </td>
