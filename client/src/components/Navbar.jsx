@@ -20,10 +20,13 @@ const Navbar = () => {
               <MapPin className="w-3.5 h-3.5" />
               المركز التجاري سوق الفلاح، تيارت
             </span>
-            <span className="hidden sm:flex items-center gap-1.5 text-slate-300">
-              <Phone className="w-3.5 h-3.5" />
-              خدمة الزبائن: 0550 00 60 60
-            </span>
+            <a
+              href="tel:0550000606"
+              className="hidden sm:flex items-center gap-1.5 text-slate-300 hover:text-white transition"
+            >
+              <Phone className="w-3.5 h-3.5 text-purple-400" />
+              <span>خدمة الزبائن: <strong className="text-white" dir="ltr">0550 00 06 06</strong></span>
+            </a>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-amber-400 flex items-center gap-1 font-semibold text-[11px]">

@@ -57,8 +57,10 @@ const Footer = () => {
               <span>المركز التجاري سوق الفلاح، ولاية تيارت، الجزائر</span>
             </div>
             <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-rose-500 shrink-0" />
-              <span dir="ltr">0550 00 60 60</span>
+              <Phone className="w-4 h-4 text-purple-400 shrink-0" />
+              <a href="tel:0550000606" className="hover:text-white transition font-bold" dir="ltr">
+                0550 00 06 06
+              </a>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-rose-500 shrink-0" />
