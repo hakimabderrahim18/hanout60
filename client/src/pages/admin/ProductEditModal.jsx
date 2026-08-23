@@ -218,19 +218,23 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
   const totalStock = sizes.reduce((acc, curr) => acc + (Number(curr.quantity) || 0), 0);
 
   // Colors helpers
-  const handleAddColor = (clr) => {
-    const val = (clr || newColorInput).trim();
+  const handleAddColor = (clrInput) => {
+    const val = typeof clrInput === 'string' && clrInput.trim() !== ''
+      ? clrInput.trim()
+      : (newColorInput || '').trim();
+
     if (!val) return;
+
     if (colors.includes(val)) {
-      alert(`اللون "${val}" مضاف بالفعل!`);
+      alert(`اللون "${val}" مضاف بالفعل في القائمة!`);
       return;
     }
-    setColors([...colors, val]);
+    setColors((prev) => [...prev, val]);
     setNewColorInput('');
   };
 
-  const handleRemoveColor = (clr) => {
-    setColors(colors.filter((c) => c !== clr));
+  const handleRemoveColor = (clrToRemove) => {
+    setColors((prev) => prev.filter((c) => c !== clrToRemove));
   };
 
   const colorPresets = ['أسود', 'أبيض', 'كحلي', 'بني', 'رمادي', 'أحمر', 'بيج', 'أزرق', 'أخضر', 'هافان'];
@@ -442,7 +446,7 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
-                        handleAddColor();
+                        handleAddColor(newColorInput);
                       }
                     }}
                     placeholder="اكتب لوناً جديداً ثم اضغط إضافة..."
@@ -450,8 +454,8 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
                   />
                   <button
                     type="button"
-                    onClick={() => handleAddColor()}
-                    className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition shrink-0"
+                    onClick={() => handleAddColor(newColorInput)}
+                    className="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white rounded-xl text-xs font-bold transition shrink-0 shadow-sm"
                   >
                     + إضافة
                   </button>
