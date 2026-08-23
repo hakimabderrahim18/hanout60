@@ -17,8 +17,10 @@ const generateToken = (id) => {
 exports.loginAdmin = async (req, res, next) => {
   try {
     const { username, password } = req.body;
+    const cleanUsername = username ? username.trim().toLowerCase() : '';
+    const cleanPassword = password ? password.trim() : '';
 
-    if (!username || !password) {
+    if (!cleanUsername || !cleanPassword) {
       return res.status(400).json({
         success: false,
         message: 'يرجى إدخال اسم المستخدم وكلمة المرور',
@@ -26,10 +28,10 @@ exports.loginAdmin = async (req, res, next) => {
     }
 
     // Check for admin
-    let admin = await Admin.findOne({ username });
+    let admin = await Admin.findOne({ username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') } });
 
     // Auto-seed default admin if no admin exists in DB yet
-    if (!admin && username === 'admin' && password === 'admin25') {
+    if (!admin && cleanUsername === 'admin' && cleanPassword === 'admin25') {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('admin25', salt);
       admin = await Admin.create({
@@ -42,16 +44,16 @@ exports.loginAdmin = async (req, res, next) => {
     if (!admin) {
       return res.status(401).json({
         success: false,
-        message: 'بيانات تسجيل الدخول غير صحيحة',
+        message: 'بيانات تسجيل الدخول غير صحيحة (اسم المستخدم غير موجود)',
       });
     }
 
     // Match password
-    const isMatch = await admin.matchPassword(password);
+    const isMatch = await admin.matchPassword(cleanPassword);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: 'بيانات تسجيل الدخول غير صحيحة',
+        message: 'كلمة المرور غير صحيحة',
       });
     }
 

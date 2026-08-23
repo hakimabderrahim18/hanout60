@@ -36,7 +36,10 @@ export const AuthProvider = ({ children }) => {
   // Login method
   const login = async (username, password) => {
     try {
-      const res = await api.post('/auth/login', { username, password });
+      const res = await api.post('/auth/login', {
+        username: username.trim(),
+        password: password.trim(),
+      });
       if (res.data.success) {
         const { token: newToken, ...userData } = res.data.data;
         localStorage.setItem('hanout60_admin_token', newToken);
@@ -46,7 +49,13 @@ export const AuthProvider = ({ children }) => {
         return { success: true, message: res.data.message };
       }
     } catch (error) {
-      const msg = error.response?.data?.message || 'فشل تسجيل الدخول، تحقق من البيانات';
+      console.error('Login error details:', error);
+      let msg = 'فشل تسجيل الدخول، تحقق من البيانات';
+      if (error.response?.data?.message) {
+        msg = error.response.data.message;
+      } else if (error.message === 'Network Error' || !error.response) {
+        msg = 'تعذر الاتصال بالخادم (Network Error). يرجى التأكد من تشغيل خادم Render وضبط متغير VITE_API_URL في Vercel.';
+      }
       return { success: false, message: msg };
     }
   };
