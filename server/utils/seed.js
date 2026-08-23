@@ -6,7 +6,7 @@ const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Notification = require('../models/Notification');
 
-// 20 Selected Shoe Products across all categories
+// 20 Selected Shoe Products with realistic Stock & Run-Out Occurrences
 const productsData = [
   {
     name: 'حذاء رياضي نايك إير زوم ماكس (Nike Air Zoom Pegasus)',
@@ -20,11 +20,11 @@ const productsData = [
     brand: 'Nike',
     color: 'أحمر وأسود',
     sizes: [
-      { size: '40', quantity: 6 },
-      { size: '41', quantity: 9 },
-      { size: '42', quantity: 12 },
-      { size: '43', quantity: 5 },
-      { size: '44', quantity: 3 },
+      { size: '40', quantity: 3 },
+      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '43', quantity: 4 },
+      { size: '44', quantity: 1 }, // LOW STOCK
     ],
   },
   {
@@ -41,9 +41,9 @@ const productsData = [
     sizes: [
       { size: '39', quantity: 4 },
       { size: '40', quantity: 7 },
-      { size: '41', quantity: 8 },
+      { size: '41', quantity: 0 }, // RUN OUT
       { size: '42', quantity: 5 },
-      { size: '43', quantity: 4 },
+      { size: '43', quantity: 0 }, // RUN OUT
     ],
   },
   {
@@ -66,8 +66,9 @@ const productsData = [
     ],
   },
   {
-    name: 'حذاء بوما فلاير رنر للجري (Puma Flyer Runner)',
-    description: 'تصميم رياضي عصري يجمع بين خفة الوزن والتبطين الداخلي المريح SoftFoam.',
+    // TOTAL RUN OUT OF STOCK (isOutOfStock = true)
+    name: 'حذاء بوما فلاير رنر للجري (Puma Flyer Runner) - نفد بالكامل',
+    description: 'تصميم رياضي عصري خفيف للغاية بتبطين مريح SoftFoam، نفدت كامل الكميات من المحل.',
     price: 5500,
     images: [
       'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80',
@@ -76,10 +77,10 @@ const productsData = [
     brand: 'Puma',
     color: 'أسود مع لمسات بيضاء',
     sizes: [
-      { size: '40', quantity: 4 },
-      { size: '41', quantity: 6 },
-      { size: '42', quantity: 7 },
-      { size: '43', quantity: 3 },
+      { size: '40', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '43', quantity: 0 }, // RUN OUT
     ],
   },
   {
@@ -94,10 +95,10 @@ const productsData = [
     color: 'وردي وأبيض',
     sizes: [
       { size: '36', quantity: 4 },
-      { size: '37', quantity: 7 },
-      { size: '38', quantity: 9 },
-      { size: '39', quantity: 6 },
-      { size: '40', quantity: 3 },
+      { size: '37', quantity: 0 }, // RUN OUT
+      { size: '38', quantity: 8 },
+      { size: '39', quantity: 0 }, // RUN OUT
+      { size: '40', quantity: 2 },
     ],
   },
   {
@@ -113,7 +114,7 @@ const productsData = [
     sizes: [
       { size: '40', quantity: 5 },
       { size: '41', quantity: 8 },
-      { size: '42', quantity: 6 },
+      { size: '42', quantity: 0 }, // RUN OUT
       { size: '43', quantity: 4 },
       { size: '44', quantity: 2 },
     ],
@@ -130,11 +131,11 @@ const productsData = [
     color: 'أصفر جملي كلاسيكي',
     sizes: [
       { size: '40', quantity: 3 },
-      { size: '41', quantity: 6 },
-      { size: '42', quantity: 8 },
-      { size: '43', quantity: 5 },
-      { size: '44', quantity: 3 },
-      { size: '45', quantity: 2 },
+      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 6 },
+      { size: '43', quantity: 0 }, // RUN OUT
+      { size: '44', quantity: 2 },
+      { size: '45', quantity: 1 },
     ],
   },
   {
@@ -150,15 +151,15 @@ const productsData = [
     sizes: [
       { size: '28', quantity: 4 },
       { size: '29', quantity: 6 },
-      { size: '30', quantity: 8 },
+      { size: '30', quantity: 0 }, // RUN OUT
       { size: '31', quantity: 5 },
       { size: '32', quantity: 4 },
-      { size: '33', quantity: 3 },
+      { size: '33', quantity: 0 }, // RUN OUT
     ],
   },
   {
     name: 'حذاء موكاسين لوفر بدون أربطة (Italian Leather Loafers)',
-    description: 'موكاسين رجالي فاخر وسهل الارتداء مصنوع من جلد ناعم ومريح للغاية للعمل والتنقل.',
+    description: 'موكاسين رجالي فاخر وسهل الارتداء مصنوع من جلد ناعم ومريح للعمل والتنقل.',
     price: 7200,
     images: [
       'https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=800&auto=format&fit=crop&q=80',
@@ -174,8 +175,9 @@ const productsData = [
     ],
   },
   {
-    name: 'حذاء كعب نسائي أنيق للمناسبات (Elegant High Heels)',
-    description: 'كعب مريح ومتوازن بارتفاع 7 سم، تصميم انسيابي ساحر للحفلات والأفراح.',
+    // TOTAL RUN OUT OF STOCK
+    name: 'حذاء كعب نسائي أنيق للمناسبات (Elegant High Heels) - نفد من المخزن',
+    description: 'كعب متوازن بارتفاع 7 سم للحفلات والأعراس، نفد بالكامل نظراً للإقبال الشديد.',
     price: 7400,
     images: [
       'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&auto=format&fit=crop&q=80',
@@ -184,10 +186,10 @@ const productsData = [
     brand: 'Zara Woman',
     color: 'أسود مطفي',
     sizes: [
-      { size: '36', quantity: 3 },
-      { size: '37', quantity: 6 },
-      { size: '38', quantity: 7 },
-      { size: '39', quantity: 4 },
+      { size: '36', quantity: 0 }, // RUN OUT
+      { size: '37', quantity: 0 }, // RUN OUT
+      { size: '38', quantity: 0 }, // RUN OUT
+      { size: '39', quantity: 0 }, // RUN OUT
     ],
   },
   {
@@ -202,10 +204,10 @@ const productsData = [
     color: 'بني داكن',
     sizes: [
       { size: '40', quantity: 5 },
-      { size: '41', quantity: 8 },
+      { size: '41', quantity: 0 }, // RUN OUT
       { size: '42', quantity: 9 },
       { size: '43', quantity: 6 },
-      { size: '44', quantity: 4 },
+      { size: '44', quantity: 0 }, // RUN OUT
     ],
   },
   {
@@ -221,8 +223,8 @@ const productsData = [
     sizes: [
       { size: '39', quantity: 3 },
       { size: '40', quantity: 6 },
-      { size: '41', quantity: 10 },
-      { size: '42', quantity: 9 },
+      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 8 },
       { size: '43', quantity: 5 },
     ],
   },
@@ -239,9 +241,9 @@ const productsData = [
     sizes: [
       { size: '40', quantity: 4 },
       { size: '41', quantity: 7 },
-      { size: '42', quantity: 8 },
+      { size: '42', quantity: 0 }, // RUN OUT
       { size: '43', quantity: 5 },
-      { size: '44', quantity: 3 },
+      { size: '44', quantity: 0 }, // RUN OUT
     ],
   },
   {
@@ -257,9 +259,9 @@ const productsData = [
     sizes: [
       { size: '26', quantity: 4 },
       { size: '27', quantity: 5 },
-      { size: '28', quantity: 6 },
+      { size: '28', quantity: 0 }, // RUN OUT
       { size: '29', quantity: 5 },
-      { size: '30', quantity: 3 },
+      { size: '30', quantity: 0 }, // RUN OUT
     ],
   },
   {
@@ -274,7 +276,7 @@ const productsData = [
     color: 'أسود فحمي',
     sizes: [
       { size: '40', quantity: 4 },
-      { size: '41', quantity: 6 },
+      { size: '41', quantity: 0 }, // RUN OUT
       { size: '42', quantity: 7 },
       { size: '43', quantity: 4 },
       { size: '44', quantity: 2 },
@@ -294,7 +296,7 @@ const productsData = [
       { size: '39', quantity: 6 },
       { size: '40', quantity: 8 },
       { size: '41', quantity: 10 },
-      { size: '42', quantity: 8 },
+      { size: '42', quantity: 0 }, // RUN OUT
       { size: '43', quantity: 6 },
     ],
   },
@@ -312,7 +314,7 @@ const productsData = [
       { size: '39', quantity: 4 },
       { size: '40', quantity: 7 },
       { size: '41', quantity: 8 },
-      { size: '42', quantity: 6 },
+      { size: '42', quantity: 0 }, // RUN OUT
       { size: '43', quantity: 4 },
     ],
   },
@@ -329,7 +331,7 @@ const productsData = [
     sizes: [
       { size: '37', quantity: 5 },
       { size: '38', quantity: 8 },
-      { size: '39', quantity: 6 },
+      { size: '39', quantity: 0 }, // RUN OUT
       { size: '40', quantity: 4 },
     ],
   },
@@ -346,13 +348,14 @@ const productsData = [
     sizes: [
       { size: '40', quantity: 4 },
       { size: '41', quantity: 7 },
-      { size: '42', quantity: 5 },
+      { size: '42', quantity: 0 }, // RUN OUT
       { size: '43', quantity: 6 },
     ],
   },
   {
-    name: 'حذاء كلاسيكي سويدي محدود نفد مخزونه (Suede Derby Vintage)',
-    description: 'حذاء كلاسيكي أنيق بدون رصيد لتجربة وسم غير متوفر.',
+    // TOTAL RUN OUT OF STOCK
+    name: 'حذاء كلاسيكي سويدي محدود (Suede Derby Vintage) - نفد من المخزون',
+    description: 'حذاء كلاسيكي أنيق تم بيع كامل النسخ منه بالكامل.',
     price: 7500,
     images: [
       'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=800&auto=format&fit=crop&q=80',
@@ -361,9 +364,9 @@ const productsData = [
     brand: 'Zara Man',
     color: 'كحلي داكن',
     sizes: [
-      { size: '40', quantity: 0 },
-      { size: '41', quantity: 0 },
-      { size: '42', quantity: 0 },
+      { size: '40', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 }, // RUN OUT
     ],
   },
 ];
@@ -420,11 +423,17 @@ const seedData = async () => {
     });
     console.log('[Seed] ✅ تم إنشاء حساب الأدمن: admin / admin25');
 
-    // 2. Create 20 Shoe Products
+    // 2. Create 20 Shoe Products with out of stock occurrences
     const createdProducts = [];
+    let outOfStockProductsCount = 0;
+    let outOfStockSizesCount = 0;
+
     for (const item of productsData) {
       const totalStock = item.sizes.reduce((acc, curr) => acc + curr.quantity, 0);
       const isOutOfStock = totalStock <= 0;
+
+      if (isOutOfStock) outOfStockProductsCount++;
+      outOfStockSizesCount += item.sizes.filter((s) => s.quantity === 0).length;
 
       const p = await Product.create({
         ...item,
@@ -433,7 +442,9 @@ const seedData = async () => {
       });
       createdProducts.push(p);
     }
-    console.log(`[Seed] ✅ تم إنشاء ${createdProducts.length} منتج حذاء بنجاح (20 منتج)`);
+    console.log(`[Seed] ✅ تم إنشاء ${createdProducts.length} منتج حذاء بنجاح`);
+    console.log(`[Seed] ⚠️ حالات نفاد المخزون الكلي (Total Out of Stock): ${outOfStockProductsCount} أحذية`);
+    console.log(`[Seed] ⚠️ حالات نفاد المقاسات الفردية (Out of Stock Sizes): ${outOfStockSizesCount} مقاس نفد`);
 
     // 3. Create 20 Realistic Orders
     const statuses = ['en_attente', 'confirmée', 'en_attente', 'confirmée', 'annulée'];
@@ -445,7 +456,7 @@ const seedData = async () => {
       const status = statuses[i % statuses.length];
 
       const p1 = createdProducts[i % createdProducts.length];
-      const p1Size = p1.sizes?.[0]?.size || '41';
+      const p1Size = p1.sizes?.find((s) => s.quantity > 0)?.size || p1.sizes?.[0]?.size || '41';
       const qty1 = (i % 2) + 1;
 
       const orderProducts = [
@@ -482,41 +493,58 @@ const seedData = async () => {
     }
     console.log(`[Seed] ✅ تم إنشاء ${createdOrders.length} طلبية زبائن بنجاح (20 طلبية)`);
 
-    // 4. Create 20 Notifications
+    // 4. Create Notifications (including realistic Rupture de stock & Out of Stock alerts)
+    const outProducts = createdProducts.filter((p) => p.isOutOfStock);
+    const partialOutProducts = createdProducts.filter(
+      (p) => !p.isOutOfStock && p.sizes.some((s) => s.quantity === 0)
+    );
+
     for (let i = 0; i < 20; i++) {
-      const isStockAlert = i % 4 === 0;
       let notifObj;
 
-      if (isStockAlert) {
-        const prod = createdProducts[i % createdProducts.length];
+      if (i % 3 === 0 && outProducts.length > 0) {
+        // Critical Total Out of Stock alert
+        const prod = outProducts[i % outProducts.length];
         notifObj = {
           type: 'rupture_stock',
-          message: `تنبيه مخزون: كمية منخفضة أو نفاد لمقاس في "${prod.name}" (${prod.brand})`,
+          message: `🚨 تنبيه حرج: نفاد المخزون الكلي للحذاء "${prod.name}" بالكامل من المتجر!`,
           relatedProduct: prod._id,
           isRead: i > 6,
-          createdAt: new Date(Date.now() - (i * 5) * 3600 * 1000),
+          createdAt: new Date(Date.now() - (i * 3) * 3600 * 1000),
+        };
+      } else if (i % 3 === 1 && partialOutProducts.length > 0) {
+        // Specific Size Out of Stock alert
+        const prod = partialOutProducts[i % partialOutProducts.length];
+        const outSize = prod.sizes.find((s) => s.quantity === 0)?.size || '41';
+        notifObj = {
+          type: 'rupture_stock',
+          message: `⚠️ تنبيه مخزون: نفاد كمية المقاس (${outSize}) للحذاء "${prod.name}" (الكمية المتبقية: 0)`,
+          relatedProduct: prod._id,
+          isRead: i > 8,
+          createdAt: new Date(Date.now() - (i * 4) * 3600 * 1000),
         };
       } else {
+        // New order notification
         const order = createdOrders[i % createdOrders.length];
         notifObj = {
           type: 'nouvelle_commande',
-          message: `طلب جديد من ${order.customerName} بقيمة ${order.totalAmount.toLocaleString('ar-DZ')} دج (${order.wilaya} - ${order.commune})`,
+          message: `📦 طلب جديد من ${order.customerName} بقيمة ${order.totalAmount.toLocaleString('ar-DZ')} دج (${order.wilaya} - ${order.commune})`,
           relatedOrder: order._id,
-          isRead: i > 8,
+          isRead: i > 10,
           createdAt: order.createdAt,
         };
       }
 
       await Notification.create(notifObj);
     }
-    console.log('[Seed] ✅ تم إنشاء 20 إشعار وتنبيه بنجاح');
+    console.log('[Seed] ✅ تم إنشاء 20 إشعار وتنبيه بنجاح (مع تنبيهات نفاد المخزون الكلي والمقاسات)');
 
     console.log('\n=========================================');
-    console.log('🎉 اكتمل توليد 20 منتج من كل البيانات بنجاح!');
-    console.log('- الأحذية (Products): 20 منتج');
-    console.log('- الطلبيات (Orders): 20 طلبية');
-    console.log('- الإشعارات (Notifications): 20 إشعار');
-    console.log('- حساب الأدمن: admin / admin25');
+    console.log('🎉 اكتمل توليد كافة البيانات مع حالات نفاد المخزون بنجاح!');
+    console.log(`- الأحذية: ${createdProducts.length} منتج`);
+    console.log(`- أحذية نفدت بالكامل: ${outOfStockProductsCount} أحذية (تظهر بشارة غير متوفر)`);
+    console.log(`- مقاسات نفدت جزئياً: ${outOfStockSizesCount} مقاس`);
+    console.log(`- إشعارات نفاد المخزون (Rupture de Stock): مضافة في مركز الإشعارات`);
     console.log('=========================================\n');
 
     process.exit(0);
