@@ -268,16 +268,38 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
     setSaving(true);
 
     try {
+      // Merge any pending color in input field
+      let finalColors = [...colors];
+      if (newColorInput && newColorInput.trim()) {
+        const pending = newColorInput.trim();
+        if (!finalColors.includes(pending)) {
+          finalColors.push(pending);
+        }
+      }
+      if (finalColors.length === 0) {
+        finalColors = [color.trim() || 'عام'];
+      }
+
+      // Merge any pending size in input field
+      let finalSizes = [...sizes];
+      if (newSizeInput && newSizeInput.trim()) {
+        const pSize = newSizeInput.trim();
+        const exists = finalSizes.some((s) => s.size.trim() === pSize);
+        if (!exists) {
+          finalSizes.push({ size: pSize, quantity: Number(newSizeQtyInput) || 1 });
+        }
+      }
+
       const payload = {
         name: name.trim(),
         description: description.trim(),
         price: Number(price),
         category: finalCategory,
         brand: brand.trim() || 'عام',
-        color: colors.length > 0 ? colors[0] : (color.trim() || 'عام'),
-        colors: colors.length > 0 ? colors : (color ? [color] : []),
+        color: finalColors[0] || 'عام',
+        colors: finalColors,
         images: images.length > 0 ? images : ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600'],
-        sizes,
+        sizes: finalSizes,
       };
 
       let res;

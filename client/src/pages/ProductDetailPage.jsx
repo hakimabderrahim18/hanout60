@@ -282,7 +282,12 @@ const ProductDetailPage = () => {
                   </span>
                 )}
                 <span className="text-xs text-slate-500">
-                  اللون: <strong className="text-slate-800">{product.color || 'عام'}</strong>
+                  الألوان المتوفرة:{' '}
+                  <strong className="text-slate-800">
+                    {product.colors && product.colors.length > 0
+                      ? product.colors.join('، ')
+                      : product.color || 'عام'}
+                  </strong>
                 </span>
               </div>
 

@@ -209,10 +209,11 @@ exports.updateProduct = async (req, res, next) => {
     if (category !== undefined) product.category = category;
     if (brand !== undefined) product.brand = brand;
 
-    if (parsedColors !== undefined && Array.isArray(parsedColors)) {
-      product.colors = parsedColors;
-      if (parsedColors.length > 0) {
-        product.color = parsedColors[0];
+    if (parsedColors !== undefined) {
+      const finalColList = Array.isArray(parsedColors) ? parsedColors : [parsedColors];
+      product.colors = finalColList;
+      if (finalColList.length > 0) {
+        product.color = finalColList[0];
       }
       product.markModified('colors');
     } else if (color !== undefined) {
