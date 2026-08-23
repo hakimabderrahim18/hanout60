@@ -1,6 +1,7 @@
 require('dotenv').config();
 const http = require('http');
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
@@ -42,7 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health Check
+// Health Check API
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
@@ -58,12 +59,22 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-
+// Root route or static client SPA serving
+const clientDistPath = path.join(__dirname, '../client/dist');
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+    res.sendFile(path.resolve(clientDistPath, 'index.html'));
+  });
+} else {
+  // If client is deployed on Vercel separately, provide helpful API root info
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'online',
+      message: 'خادم حانوت 60 يعمل بنجاح (Hanout 60 API Server is Running)',
+      frontend: 'https://hanout60.vercel.app',
+      location: 'Centre Commercial Souk el Fellah, Tiaret, Algérie',
+    });
   });
 }
 
@@ -76,6 +87,6 @@ server.listen(PORT, () => {
   console.log(`=========================================`);
   console.log(`🚀 خادم حانوت 60 (Hanout 60 Server) يعمل على المنفذ: ${PORT}`);
   console.log(`📍 العنوان: سوق الفلاح، تيارت، الجزائر`);
-  console.log(`🌐 رابط الخادم: http://localhost:${PORT}`);
+  console.log(`🌐 واجهة المتجر: https://hanout60.vercel.app`);
   console.log(`=========================================`);
 });
