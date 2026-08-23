@@ -109,7 +109,7 @@ exports.getProductById = async (req, res, next) => {
 // @access  Private (Admin)
 exports.createProduct = async (req, res, next) => {
   try {
-    const { name, description, price, images, category, sizes, color, brand } = req.body;
+    const { name, description, price, images, category, sizes, colors, color, brand } = req.body;
 
     let parsedSizes = sizes;
     if (typeof sizes === 'string') {
@@ -118,6 +118,18 @@ exports.createProduct = async (req, res, next) => {
       } catch (e) {
         parsedSizes = [];
       }
+    }
+
+    let parsedColors = colors;
+    if (typeof colors === 'string') {
+      try {
+        parsedColors = JSON.parse(colors);
+      } catch (e) {
+        parsedColors = colors.split(',').map((c) => c.trim()).filter(Boolean);
+      }
+    }
+    if (!Array.isArray(parsedColors) && color) {
+      parsedColors = [color];
     }
 
     // Calculate total stock
@@ -132,7 +144,8 @@ exports.createProduct = async (req, res, next) => {
       images: Array.isArray(images) ? images : [],
       category: category || 'homme',
       sizes: Array.isArray(parsedSizes) ? parsedSizes : [],
-      color: color || 'عام',
+      colors: Array.isArray(parsedColors) ? parsedColors : [],
+      color: color || (parsedColors && parsedColors[0]) || 'متعدد الألوان',
       brand: brand || 'عام',
       stock: totalStock,
       isOutOfStock: totalStock <= 0,
@@ -169,7 +182,7 @@ exports.updateProduct = async (req, res, next) => {
       });
     }
 
-    const { name, description, price, images, category, sizes, color, brand } = req.body;
+    const { name, description, price, images, category, sizes, colors, color, brand } = req.body;
 
     let parsedSizes = sizes;
     if (typeof sizes === 'string') {
@@ -180,11 +193,21 @@ exports.updateProduct = async (req, res, next) => {
       }
     }
 
+    let parsedColors = colors;
+    if (typeof colors === 'string') {
+      try {
+        parsedColors = JSON.parse(colors);
+      } catch (e) {
+        parsedColors = colors.split(',').map((c) => c.trim()).filter(Boolean);
+      }
+    }
+
     if (name !== undefined) product.name = name;
     if (description !== undefined) product.description = description;
     if (price !== undefined) product.price = Number(price);
     if (images !== undefined) product.images = Array.isArray(images) ? images : product.images;
     if (category !== undefined) product.category = category;
+    if (parsedColors !== undefined && Array.isArray(parsedColors)) product.colors = parsedColors;
     if (color !== undefined) product.color = color;
     if (brand !== undefined) product.brand = brand;
 

@@ -54,6 +54,7 @@ exports.createOrder = async (req, res, next) => {
         name: product.name,
         image: product.images && product.images.length > 0 ? product.images[0] : '',
         size: item.size.toString(),
+        color: item.color || (product.colors && product.colors[0]) || product.color || '',
         quantity: item.quantity || 1,
         price: product.price,
       });

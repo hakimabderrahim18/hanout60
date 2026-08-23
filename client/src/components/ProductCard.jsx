@@ -97,6 +97,28 @@ const ProductCard = ({ product, onQuickOrder }) => {
               )}
             </div>
           </div>
+
+          {/* Multiple Colors available */}
+          {((product.colors && product.colors.length > 0) || product.color) && (
+            <div className="mt-2.5">
+              <span className="text-[11px] font-semibold text-slate-400 block mb-1">
+                الألوان المتوفرة:
+              </span>
+              <div className="flex flex-wrap gap-1">
+                {(product.colors && product.colors.length > 0
+                  ? product.colors
+                  : [product.color]
+                ).map((clr, i) => (
+                  <span
+                    key={i}
+                    className="text-[11px] px-2 py-0.5 bg-purple-50 text-purple-700 rounded-md border border-purple-200/60 font-semibold"
+                  >
+                    {clr}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Price & Actions */}

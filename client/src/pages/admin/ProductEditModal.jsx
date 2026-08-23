@@ -24,6 +24,8 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
   const [customCategory, setCustomCategory] = useState('');
   const [brand, setBrand] = useState('');
   const [color, setColor] = useState('');
+  const [colors, setColors] = useState(['أسود', 'أبيض']);
+  const [newColorInput, setNewColorInput] = useState('');
   const [images, setImages] = useState([]);
   const [imageUrlInput, setImageUrlInput] = useState('');
   const [sizes, setSizes] = useState([
@@ -58,6 +60,13 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
 
       setBrand(product.brand || '');
       setColor(product.color || '');
+      setColors(
+        product.colors && product.colors.length > 0
+          ? product.colors
+          : product.color
+          ? [product.color]
+          : ['أسود', 'أبيض']
+      );
       setImages(product.images || []);
       setSizes(
         product.sizes && product.sizes.length > 0
@@ -73,6 +82,7 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
       setCustomCategory('');
       setBrand('');
       setColor('');
+      setColors(['أسود', 'أبيض']);
       setImages([]);
       setSizes([
         { size: '40', quantity: 5 },
@@ -207,6 +217,24 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
   // Total stock calculation
   const totalStock = sizes.reduce((acc, curr) => acc + (Number(curr.quantity) || 0), 0);
 
+  // Colors helpers
+  const handleAddColor = (clr) => {
+    const val = (clr || newColorInput).trim();
+    if (!val) return;
+    if (colors.includes(val)) {
+      alert(`اللون "${val}" مضاف بالفعل!`);
+      return;
+    }
+    setColors([...colors, val]);
+    setNewColorInput('');
+  };
+
+  const handleRemoveColor = (clr) => {
+    setColors(colors.filter((c) => c !== clr));
+  };
+
+  const colorPresets = ['أسود', 'أبيض', 'كحلي', 'بني', 'رمادي', 'أحمر', 'بيج', 'أزرق', 'أخضر', 'هافان'];
+
   // Submit product
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -242,7 +270,8 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
         price: Number(price),
         category: finalCategory,
         brand: brand.trim() || 'عام',
-        color: color.trim() || 'عام',
+        color: colors.length > 0 ? colors[0] : (color.trim() || 'عام'),
+        colors: colors.length > 0 ? colors : (color ? [color] : []),
         images: images.length > 0 ? images : ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600'],
         sizes,
       };
@@ -370,15 +399,82 @@ const ProductEditModal = ({ isOpen, onClose, product, onSaveSuccess }) => {
               />
             </div>
 
-            <div>
-              <label className="block font-bold text-slate-700 mb-1.5">اللون:</label>
-              <input
-                type="text"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                placeholder="أسود، أبيض، بني، كحلي..."
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-              />
+            <div className="sm:col-span-2 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block font-bold text-slate-700 text-xs">
+                  الألوان المتوفرة للحذاء (Multiple Colors):
+                </label>
+                <span className="text-[11px] text-purple-600 font-bold">
+                  {colors.length} ألوان مضافة
+                </span>
+              </div>
+
+              {/* Current Colors Tags */}
+              <div className="flex flex-wrap gap-2 min-h-[36px] p-2 bg-white rounded-xl border border-slate-200 items-center">
+                {colors.map((clr, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-800 rounded-lg text-xs font-bold border border-purple-200"
+                  >
+                    <span>{clr}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveColor(clr)}
+                      className="text-purple-400 hover:text-rose-600 transition"
+                      title="حذف اللون"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+                {colors.length === 0 && (
+                  <span className="text-xs text-slate-400">لم تتم إضافة أي لون بعد</span>
+                )}
+              </div>
+
+              {/* Add Custom Color & Quick Presets */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                <div className="flex items-center gap-1.5 flex-1">
+                  <input
+                    type="text"
+                    value={newColorInput}
+                    onChange={(e) => setNewColorInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddColor();
+                      }
+                    }}
+                    placeholder="اكتب لوناً جديداً ثم اضغط إضافة..."
+                    className="flex-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleAddColor()}
+                    className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold transition shrink-0"
+                  >
+                    + إضافة
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-1 items-center">
+                  <span className="text-[10px] text-slate-400 shrink-0">ألوان شائعة:</span>
+                  {colorPresets.map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => handleAddColor(preset)}
+                      className={`text-[10px] px-2 py-0.5 rounded-md border transition ${
+                        colors.includes(preset)
+                          ? 'bg-purple-100 text-purple-700 border-purple-300 opacity-60'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="sm:col-span-2">

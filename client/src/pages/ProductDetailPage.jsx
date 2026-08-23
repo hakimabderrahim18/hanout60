@@ -39,6 +39,7 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
 
   // Form states
@@ -65,6 +66,13 @@ const ProductDetailPage = () => {
           if (prod.sizes && prod.sizes.length > 0) {
             const firstAvailable = prod.sizes.find((s) => Number(s.quantity) > 0);
             setSelectedSize(firstAvailable ? firstAvailable.size : prod.sizes[0].size);
+          }
+
+          // Pre-select first color
+          if (prod.colors && prod.colors.length > 0) {
+            setSelectedColor(prod.colors[0]);
+          } else if (prod.color) {
+            setSelectedColor(prod.color);
           }
         }
       } catch (err) {
@@ -158,6 +166,7 @@ const ProductDetailPage = () => {
             product: product._id,
             name: product.name,
             size: selectedSize.toString(),
+            color: selectedColor || product.color || '',
             quantity,
             price: product.price,
           },
@@ -363,9 +372,40 @@ const ProductDetailPage = () => {
                   </div>
                 </div>
 
+                {/* Color Selection if available */}
+                {((product.colors && product.colors.length > 0) || product.color) && (
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-2">
+                      2. اختر اللون المفضل (Couleur):
+                    </label>
+                    <div className="flex flex-wrap gap-2.5">
+                      {(product.colors && product.colors.length > 0
+                        ? product.colors
+                        : [product.color]
+                      ).map((clr, idx) => {
+                        const isSelected = selectedColor === clr;
+                        return (
+                          <button
+                            type="button"
+                            key={idx}
+                            onClick={() => setSelectedColor(clr)}
+                            className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold border transition ${
+                              isSelected
+                                ? 'bg-purple-600 text-white border-purple-600 shadow-md shadow-purple-600/30 scale-105'
+                                : 'bg-slate-50 text-slate-800 border-slate-200 hover:border-purple-300'
+                            }`}
+                          >
+                            {clr}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Quantity */}
                 <div className="flex items-center justify-between bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
-                  <span className="text-xs font-bold text-slate-700">2. الكمية المطلوبة:</span>
+                  <span className="text-xs font-bold text-slate-700">3. الكمية المطلوبة:</span>
                   <div className="flex items-center gap-3">
                     <button
                       type="button"

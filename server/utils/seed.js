@@ -6,7 +6,7 @@ const Product = require('../models/Product');
 const Order = require('../models/Order');
 const Notification = require('../models/Notification');
 
-// 20 Selected Shoe Products with realistic Stock & Run-Out Occurrences
+// 20 Selected Shoe Products with multiple colors & realistic stock
 const productsData = [
   {
     name: 'حذاء رياضي نايك إير زوم ماكس (Nike Air Zoom Pegasus)',
@@ -18,13 +18,14 @@ const productsData = [
     ],
     category: 'sport',
     brand: 'Nike',
-    color: 'أحمر وأسود',
+    colors: ['أحمر ناري', 'أسود فحمي', 'أبيض ورمادي'],
+    color: 'أحمر ناري',
     sizes: [
       { size: '40', quantity: 3 },
-      { size: '41', quantity: 0 }, // RUN OUT
-      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 },
+      { size: '42', quantity: 0 },
       { size: '43', quantity: 4 },
-      { size: '44', quantity: 1 }, // LOW STOCK
+      { size: '44', quantity: 1 },
     ],
   },
   {
@@ -37,13 +38,14 @@ const productsData = [
     ],
     category: 'casual',
     brand: 'Adidas',
-    color: 'أبيض وخطوط سوداء',
+    colors: ['أبيض بخطوط سوداء', 'أسود بالكامل', 'أبيض بخطوط خضراء'],
+    color: 'أبيض بخطوط سوداء',
     sizes: [
       { size: '39', quantity: 4 },
       { size: '40', quantity: 7 },
-      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 },
       { size: '42', quantity: 5 },
-      { size: '43', quantity: 0 }, // RUN OUT
+      { size: '43', quantity: 0 },
     ],
   },
   {
@@ -56,7 +58,8 @@ const productsData = [
     ],
     category: 'homme',
     brand: 'Royal Leather',
-    color: 'بني عسلي غامق',
+    colors: ['بني عسلي', 'أسود ملكي', 'هافان كلاسيك'],
+    color: 'بني عسلي',
     sizes: [
       { size: '40', quantity: 4 },
       { size: '41', quantity: 6 },
@@ -66,7 +69,6 @@ const productsData = [
     ],
   },
   {
-    // TOTAL RUN OUT OF STOCK (isOutOfStock = true)
     name: 'حذاء بوما فلاير رنر للجري (Puma Flyer Runner) - نفد بالكامل',
     description: 'تصميم رياضي عصري خفيف للغاية بتبطين مريح SoftFoam، نفدت كامل الكميات من المحل.',
     price: 5500,
@@ -75,12 +77,13 @@ const productsData = [
     ],
     category: 'sport',
     brand: 'Puma',
-    color: 'أسود مع لمسات بيضاء',
+    colors: ['أسود وأبيض', 'أزرق كحلي'],
+    color: 'أسود وأبيض',
     sizes: [
-      { size: '40', quantity: 0 }, // RUN OUT
-      { size: '41', quantity: 0 }, // RUN OUT
-      { size: '42', quantity: 0 }, // RUN OUT
-      { size: '43', quantity: 0 }, // RUN OUT
+      { size: '40', quantity: 0 },
+      { size: '41', quantity: 0 },
+      { size: '42', quantity: 0 },
+      { size: '43', quantity: 0 },
     ],
   },
   {
@@ -92,12 +95,13 @@ const productsData = [
     ],
     category: 'femme',
     brand: 'Nike',
-    color: 'وردي وأبيض',
+    colors: ['وردي باستيل', 'أبيض ناصع', 'رمادي خفيف'],
+    color: 'وردي باستيل',
     sizes: [
       { size: '36', quantity: 4 },
-      { size: '37', quantity: 0 }, // RUN OUT
+      { size: '37', quantity: 0 },
       { size: '38', quantity: 8 },
-      { size: '39', quantity: 0 }, // RUN OUT
+      { size: '39', quantity: 0 },
       { size: '40', quantity: 2 },
     ],
   },
@@ -110,11 +114,12 @@ const productsData = [
     ],
     category: 'casual',
     brand: 'New Balance',
-    color: 'رمادي كلاسيكي',
+    colors: ['رمادي كلاسيك', 'كحلي داكن', 'أخضر زيتي'],
+    color: 'رمادي كلاسيك',
     sizes: [
       { size: '40', quantity: 5 },
       { size: '41', quantity: 8 },
-      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 },
       { size: '43', quantity: 4 },
       { size: '44', quantity: 2 },
     ],
@@ -128,12 +133,13 @@ const productsData = [
     ],
     category: 'bottines',
     brand: 'Timberland',
-    color: 'أصفر جملي كلاسيكي',
+    colors: ['أصفر جملي (Wheat)', 'أسود مطفي', 'بني شوكولاتة'],
+    color: 'أصفر جملي (Wheat)',
     sizes: [
       { size: '40', quantity: 3 },
-      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 },
       { size: '42', quantity: 6 },
-      { size: '43', quantity: 0 }, // RUN OUT
+      { size: '43', quantity: 0 },
       { size: '44', quantity: 2 },
       { size: '45', quantity: 1 },
     ],
@@ -147,14 +153,15 @@ const productsData = [
     ],
     category: 'enfant',
     brand: 'Nike Kids',
+    colors: ['أزرق وبرتقالي', 'أسود وأحمر', 'وردي وأبيض'],
     color: 'أزرق وبرتقالي',
     sizes: [
       { size: '28', quantity: 4 },
       { size: '29', quantity: 6 },
-      { size: '30', quantity: 0 }, // RUN OUT
+      { size: '30', quantity: 0 },
       { size: '31', quantity: 5 },
       { size: '32', quantity: 4 },
-      { size: '33', quantity: 0 }, // RUN OUT
+      { size: '33', quantity: 0 },
     ],
   },
   {
@@ -166,7 +173,8 @@ const productsData = [
     ],
     category: 'homme',
     brand: 'Clarks Style',
-    color: 'هافان / بني فاتح',
+    colors: ['هافان فاتح', 'أسود لميع', 'بني داكن'],
+    color: 'هافان فاتح',
     sizes: [
       { size: '40', quantity: 4 },
       { size: '41', quantity: 6 },
@@ -175,7 +183,6 @@ const productsData = [
     ],
   },
   {
-    // TOTAL RUN OUT OF STOCK
     name: 'حذاء كعب نسائي أنيق للمناسبات (Elegant High Heels) - نفد من المخزن',
     description: 'كعب متوازن بارتفاع 7 سم للحفلات والأعراس، نفد بالكامل نظراً للإقبال الشديد.',
     price: 7400,
@@ -184,12 +191,13 @@ const productsData = [
     ],
     category: 'femme',
     brand: 'Zara Woman',
+    colors: ['أسود مطفي', 'أحمر كرزي', 'بيج نود'],
     color: 'أسود مطفي',
     sizes: [
-      { size: '36', quantity: 0 }, // RUN OUT
-      { size: '37', quantity: 0 }, // RUN OUT
-      { size: '38', quantity: 0 }, // RUN OUT
-      { size: '39', quantity: 0 }, // RUN OUT
+      { size: '36', quantity: 0 },
+      { size: '37', quantity: 0 },
+      { size: '38', quantity: 0 },
+      { size: '39', quantity: 0 },
     ],
   },
   {
@@ -201,13 +209,14 @@ const productsData = [
     ],
     category: 'sandales',
     brand: 'Medical Comfort',
-    color: 'بني داكن',
+    colors: ['بني غامق', 'أسود', 'طبيعي كراميل'],
+    color: 'بني غامق',
     sizes: [
       { size: '40', quantity: 5 },
-      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 },
       { size: '42', quantity: 9 },
       { size: '43', quantity: 6 },
-      { size: '44', quantity: 0 }, // RUN OUT
+      { size: '44', quantity: 0 },
     ],
   },
   {
@@ -219,11 +228,12 @@ const productsData = [
     ],
     category: 'casual',
     brand: 'Nike',
+    colors: ['أبيض كامل', 'أسود كامل', 'أبيض بعلامة سوداء'],
     color: 'أبيض كامل',
     sizes: [
       { size: '39', quantity: 3 },
       { size: '40', quantity: 6 },
-      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 },
       { size: '42', quantity: 8 },
       { size: '43', quantity: 5 },
     ],
@@ -237,13 +247,14 @@ const productsData = [
     ],
     category: 'medical',
     brand: 'Dr. Step',
-    color: 'أسود مريح',
+    colors: ['أسود طبي', 'بني مريح'],
+    color: 'أسود طبي',
     sizes: [
       { size: '40', quantity: 4 },
       { size: '41', quantity: 7 },
-      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 },
       { size: '43', quantity: 5 },
-      { size: '44', quantity: 0 }, // RUN OUT
+      { size: '44', quantity: 0 },
     ],
   },
   {
@@ -255,13 +266,14 @@ const productsData = [
     ],
     category: 'enfant',
     brand: 'KidsPower',
-    color: 'وردي وباستيل',
+    colors: ['وردي فاقع', 'بنفسجي ليلكي', 'أبيض وقوس قزح'],
+    color: 'وردي فاقع',
     sizes: [
       { size: '26', quantity: 4 },
       { size: '27', quantity: 5 },
-      { size: '28', quantity: 0 }, // RUN OUT
+      { size: '28', quantity: 0 },
       { size: '29', quantity: 5 },
-      { size: '30', quantity: 0 }, // RUN OUT
+      { size: '30', quantity: 0 },
     ],
   },
   {
@@ -273,10 +285,11 @@ const productsData = [
     ],
     category: 'bottines',
     brand: 'Zara Man',
+    colors: ['أسود فحمي', 'بني كستنائي', 'رمادي داكن'],
     color: 'أسود فحمي',
     sizes: [
       { size: '40', quantity: 4 },
-      { size: '41', quantity: 0 }, // RUN OUT
+      { size: '41', quantity: 0 },
       { size: '42', quantity: 7 },
       { size: '43', quantity: 4 },
       { size: '44', quantity: 2 },
@@ -291,12 +304,13 @@ const productsData = [
     ],
     category: 'sandales',
     brand: 'Adidas',
-    color: 'أسود مع خطوط بيضاء',
+    colors: ['أسود بخطوط بيضاء', 'أزرق كحلي', 'أبيض كامل'],
+    color: 'أسود بخطوط بيضاء',
     sizes: [
       { size: '39', quantity: 6 },
       { size: '40', quantity: 8 },
       { size: '41', quantity: 10 },
-      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 },
       { size: '43', quantity: 6 },
     ],
   },
@@ -309,12 +323,13 @@ const productsData = [
     ],
     category: 'sport',
     brand: 'Skechers',
+    colors: ['رمادي غامق', 'أسود', 'كحلي'],
     color: 'رمادي غامق',
     sizes: [
       { size: '39', quantity: 4 },
       { size: '40', quantity: 7 },
       { size: '41', quantity: 8 },
-      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 },
       { size: '43', quantity: 4 },
     ],
   },
@@ -327,11 +342,12 @@ const productsData = [
     ],
     category: 'femme',
     brand: 'Mango Style',
+    colors: ['بيج نود', 'أسود كلاسيك', 'عنابي'],
     color: 'بيج نود',
     sizes: [
       { size: '37', quantity: 5 },
       { size: '38', quantity: 8 },
-      { size: '39', quantity: 0 }, // RUN OUT
+      { size: '39', quantity: 0 },
       { size: '40', quantity: 4 },
     ],
   },
@@ -344,16 +360,16 @@ const productsData = [
     ],
     category: 'casual',
     brand: 'Nike',
+    colors: ['باندا (أبيض وأسود)', 'أزرق رويال وأبيض', 'رمادي وسكني'],
     color: 'باندا (أبيض وأسود)',
     sizes: [
       { size: '40', quantity: 4 },
       { size: '41', quantity: 7 },
-      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '42', quantity: 0 },
       { size: '43', quantity: 6 },
     ],
   },
   {
-    // TOTAL RUN OUT OF STOCK
     name: 'حذاء كلاسيكي سويدي محدود (Suede Derby Vintage) - نفد من المخزون',
     description: 'حذاء كلاسيكي أنيق تم بيع كامل النسخ منه بالكامل.',
     price: 7500,
@@ -362,11 +378,12 @@ const productsData = [
     ],
     category: 'homme',
     brand: 'Zara Man',
+    colors: ['كحلي داكن', 'بني شوكولا', 'رمادي دخاني'],
     color: 'كحلي داكن',
     sizes: [
-      { size: '40', quantity: 0 }, // RUN OUT
-      { size: '41', quantity: 0 }, // RUN OUT
-      { size: '42', quantity: 0 }, // RUN OUT
+      { size: '40', quantity: 0 },
+      { size: '41', quantity: 0 },
+      { size: '42', quantity: 0 },
     ],
   },
 ];
@@ -423,7 +440,7 @@ const seedData = async () => {
     });
     console.log('[Seed] ✅ تم إنشاء حساب الأدمن: admin / admin25');
 
-    // 2. Create 20 Shoe Products with out of stock occurrences
+    // 2. Create 20 Shoe Products with multiple colors
     const createdProducts = [];
     let outOfStockProductsCount = 0;
     let outOfStockSizesCount = 0;
@@ -442,11 +459,11 @@ const seedData = async () => {
       });
       createdProducts.push(p);
     }
-    console.log(`[Seed] ✅ تم إنشاء ${createdProducts.length} منتج حذاء بنجاح`);
-    console.log(`[Seed] ⚠️ حالات نفاد المخزون الكلي (Total Out of Stock): ${outOfStockProductsCount} أحذية`);
-    console.log(`[Seed] ⚠️ حالات نفاد المقاسات الفردية (Out of Stock Sizes): ${outOfStockSizesCount} مقاس نفد`);
+    console.log(`[Seed] ✅ تم إنشاء ${createdProducts.length} منتج حذاء بنجاح (مع خيارات ألوان متعددة)`);
+    console.log(`[Seed] ⚠️ حالات نفاد المخزون الكلي: ${outOfStockProductsCount} أحذية`);
+    console.log(`[Seed] ⚠️ حالات نفاد المقاسات: ${outOfStockSizesCount} مقاس`);
 
-    // 3. Create 20 Realistic Orders
+    // 3. Create 20 Realistic Orders with selected colors
     const statuses = ['en_attente', 'confirmée', 'en_attente', 'confirmée', 'annulée'];
     const createdOrders = [];
 
@@ -457,6 +474,7 @@ const seedData = async () => {
 
       const p1 = createdProducts[i % createdProducts.length];
       const p1Size = p1.sizes?.find((s) => s.quantity > 0)?.size || p1.sizes?.[0]?.size || '41';
+      const p1Color = p1.colors?.[i % (p1.colors?.length || 1)] || p1.color || 'أسود';
       const qty1 = (i % 2) + 1;
 
       const orderProducts = [
@@ -465,6 +483,7 @@ const seedData = async () => {
           name: p1.name,
           image: p1.images?.[0] || '',
           size: p1Size,
+          color: p1Color,
           quantity: qty1,
           price: p1.price,
         },
@@ -491,9 +510,9 @@ const seedData = async () => {
 
       createdOrders.push(order);
     }
-    console.log(`[Seed] ✅ تم إنشاء ${createdOrders.length} طلبية زبائن بنجاح (20 طلبية)`);
+    console.log(`[Seed] ✅ تم إنشاء ${createdOrders.length} طلبية زبائن بنجاح (مع تحديد اللون والمقاس)`);
 
-    // 4. Create Notifications (including realistic Rupture de stock & Out of Stock alerts)
+    // 4. Create Notifications
     const outProducts = createdProducts.filter((p) => p.isOutOfStock);
     const partialOutProducts = createdProducts.filter(
       (p) => !p.isOutOfStock && p.sizes.some((s) => s.quantity === 0)
@@ -503,7 +522,6 @@ const seedData = async () => {
       let notifObj;
 
       if (i % 3 === 0 && outProducts.length > 0) {
-        // Critical Total Out of Stock alert
         const prod = outProducts[i % outProducts.length];
         notifObj = {
           type: 'rupture_stock',
@@ -513,7 +531,6 @@ const seedData = async () => {
           createdAt: new Date(Date.now() - (i * 3) * 3600 * 1000),
         };
       } else if (i % 3 === 1 && partialOutProducts.length > 0) {
-        // Specific Size Out of Stock alert
         const prod = partialOutProducts[i % partialOutProducts.length];
         const outSize = prod.sizes.find((s) => s.quantity === 0)?.size || '41';
         notifObj = {
@@ -524,7 +541,6 @@ const seedData = async () => {
           createdAt: new Date(Date.now() - (i * 4) * 3600 * 1000),
         };
       } else {
-        // New order notification
         const order = createdOrders[i % createdOrders.length];
         notifObj = {
           type: 'nouvelle_commande',
@@ -537,14 +553,10 @@ const seedData = async () => {
 
       await Notification.create(notifObj);
     }
-    console.log('[Seed] ✅ تم إنشاء 20 إشعار وتنبيه بنجاح (مع تنبيهات نفاد المخزون الكلي والمقاسات)');
+    console.log('[Seed] ✅ تم إنشاء 20 إشعار وتنبيه بنجاح');
 
     console.log('\n=========================================');
-    console.log('🎉 اكتمل توليد كافة البيانات مع حالات نفاد المخزون بنجاح!');
-    console.log(`- الأحذية: ${createdProducts.length} منتج`);
-    console.log(`- أحذية نفدت بالكامل: ${outOfStockProductsCount} أحذية (تظهر بشارة غير متوفر)`);
-    console.log(`- مقاسات نفدت جزئياً: ${outOfStockSizesCount} مقاس`);
-    console.log(`- إشعارات نفاد المخزون (Rupture de Stock): مضافة في مركز الإشعارات`);
+    console.log('🎉 اكتمل توليد كافة البيانات مع خيارات الألوان المتعددة بنجاح!');
     console.log('=========================================\n');
 
     process.exit(0);

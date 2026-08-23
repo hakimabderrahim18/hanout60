@@ -8,6 +8,7 @@ const OrderModal = ({ product, initialSize, isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const [size, setSize] = useState(initialSize || '');
+  const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -17,7 +18,7 @@ const OrderModal = ({ product, initialSize, isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Update sizes when product opens
+  // Update sizes and colors when product opens
   useEffect(() => {
     if (product) {
       if (initialSize) {
@@ -26,6 +27,12 @@ const OrderModal = ({ product, initialSize, isOpen, onClose }) => {
         // Pick first available size
         const firstAvailable = product.sizes.find((s) => Number(s.quantity) > 0);
         setSize(firstAvailable ? firstAvailable.size : product.sizes[0].size);
+      }
+
+      if (product.colors && product.colors.length > 0) {
+        setSelectedColor(product.colors[0]);
+      } else if (product.color) {
+        setSelectedColor(product.color);
       }
     }
   }, [product, initialSize, isOpen]);
@@ -90,6 +97,7 @@ const OrderModal = ({ product, initialSize, isOpen, onClose }) => {
             product: product._id,
             name: product.name,
             size: size.toString(),
+            color: selectedColor || product.color || '',
             quantity,
             price: product.price,
           },
@@ -195,6 +203,37 @@ const OrderModal = ({ product, initialSize, isOpen, onClose }) => {
               )}
             </div>
           </div>
+
+          {/* Color selection if multiple available */}
+          {((product.colors && product.colors.length > 0) || product.color) && (
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-2">
+                اختر اللون المفضل:
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {(product.colors && product.colors.length > 0
+                  ? product.colors
+                  : [product.color]
+                ).map((clr, idx) => {
+                  const isSelected = selectedColor === clr;
+                  return (
+                    <button
+                      type="button"
+                      key={idx}
+                      onClick={() => setSelectedColor(clr)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                        isSelected
+                          ? 'bg-purple-600 text-white border-purple-600 shadow-md shadow-purple-600/20'
+                          : 'bg-white text-slate-800 border-slate-200 hover:border-purple-300'
+                      }`}
+                    >
+                      {clr}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Quantity selector */}
           <div className="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200">

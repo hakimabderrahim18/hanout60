@@ -48,6 +48,10 @@ const ProductSchema = new mongoose.Schema(
       type: [SizeSchema],
       default: [],
     },
+    colors: {
+      type: [String], // Array of available shoe colors e.g. ["أسود", "أبيض", "كحلي", "أحمر"]
+      default: [],
+    },
     color: {
       type: String,
       trim: true,

@@ -19,6 +19,11 @@ const OrderItemSchema = new mongoose.Schema(
       type: String,
       required: [true, 'يرجى اختيار المقاس'],
     },
+    color: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     quantity: {
       type: Number,
       required: true,

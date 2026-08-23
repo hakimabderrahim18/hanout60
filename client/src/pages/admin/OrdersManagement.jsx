@@ -232,8 +232,8 @@ const OrdersManagement = () => {
                               {order.products?.map((p, idx) => (
                                 <div key={idx} className="text-xs">
                                   <span className="font-semibold text-slate-800">{p.name}</span>
-                                  <span className="text-slate-400 text-[11px] mr-1">
-                                    (مقاس: <strong>{p.size}</strong> × {p.quantity})
+                                  <span className="text-slate-500 text-[11px] mr-1">
+                                    (مقاس: <strong>{p.size}</strong>{p.color ? ` | لون: ${p.color}` : ''} × {p.quantity})
                                   </span>
                                 </div>
                               ))}
@@ -371,7 +371,7 @@ const OrdersManagement = () => {
                     <div>
                       <span className="font-bold text-slate-900 block">{item.name}</span>
                       <span className="text-xs text-slate-500">
-                        المقاس: <strong>{item.size}</strong> | الكمية: <strong>{item.quantity}</strong>
+                        المقاس: <strong>{item.size}</strong> {item.color && `| اللون: ${item.color}`} | الكمية: <strong>{item.quantity}</strong>
                       </span>
                     </div>
                     <span className="font-black text-rose-600">
